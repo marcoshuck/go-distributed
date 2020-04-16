@@ -1,4 +1,4 @@
-package election2
+package reelection
 
 import (
 	"fmt"
