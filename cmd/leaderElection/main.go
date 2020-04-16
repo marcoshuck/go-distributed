@@ -15,7 +15,7 @@ func main() {
 		panic(err)
 	}
 	fmt.Printf("[MAIN] ZooKeeper connection created. Session ID: [%d]\n", z.SessionID())
-	nodeName, err := zoo.CreateNode(z)
+	nodeName, err := zoo.CreateElectionNode(z)
 	if err != nil {
 		fmt.Errorf("[MAIN] Error creating ZooKeeper Node.\nError: [%v]\n", err)
 		panic(err)
