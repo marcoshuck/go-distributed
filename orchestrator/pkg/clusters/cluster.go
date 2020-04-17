@@ -14,11 +14,11 @@ type cluster struct {
 	workers workers.Workers
 }
 
-func NewCluster() Cluster {
+func NewCluster(managers managers.Managers, workers workers.Workers) Cluster {
 	var c Cluster
 	c = &cluster{
-		managers: nil,
-		workers:  nil,
+		managers: managers,
+		workers:  workers,
 	}
 	return c
 }
