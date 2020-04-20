@@ -2,11 +2,16 @@ package nodes
 
 const (
 	StatusCreated status = iota
+	StatusConnecting
 	StatusRestarting
 	StatusRunning
+	StatusPausing
 	StatusPaused
+	StatusStopping
 	StatusStopped
+	StatusExiting
 	StatusExited
+	StatusKilling
 	StatusDead
 )
 

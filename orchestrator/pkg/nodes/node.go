@@ -29,6 +29,10 @@ func NewNode(name, data string) Node {
 	return n
 }
 
+func (n *node) Connect() {
+	n.Status = StatusConnecting
+}
+
 // Restart requests the Node to be restarted.
 func (n *node) Restart() {
 	n.Status = StatusRestarting
@@ -41,15 +45,15 @@ func (n *node) Run() {
 
 // Pause requests the node to pause its internal job.
 func (n *node) Pause() {
-	n.Status = StatusPaused
+	n.Status = StatusPausing
 }
 
 // Stop requests the node to fully stop but avoid being deleted.
 func (n *node) Stop() {
-	n.Status = StatusStopped
+	n.Status = StatusStopping
 }
 
 // Kill requests the node to be deleted.
 func (n *node) Kill() {
-	n.Status = StatusDead
+	n.Status = StatusKilling
 }
