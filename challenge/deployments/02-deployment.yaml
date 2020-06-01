@@ -16,4 +16,21 @@ spec:
     spec:
       containers:
         - name: challenge
-          image:
+          image: marcoshuck/adder
+          imagePullPolicy: Always
+          env:
+            - name: DATABASE_HOST
+              value: mysql:3306
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healtz
+              port: 3000
+              initialDelaySeconds: 15
+              periodSeconds: 20
