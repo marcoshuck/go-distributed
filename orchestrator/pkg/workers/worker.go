@@ -13,7 +13,7 @@ type Worker interface {
 
 type worker struct {
 	nodes.Node
-	lockManager sync.Mutex
+	lockManager sync.RWMutex
 	Manager managers.Manager
 }
 
@@ -28,6 +28,8 @@ func NewWorker(name, data string) Worker {
 }
 
 func (w *worker) GetManager() managers.Manager {
+	w.lockManager.RLock()
+	w.lockManager.RUnlock()
 	return w.Manager
 }
 

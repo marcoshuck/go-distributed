@@ -3,6 +3,8 @@ package nodes
 const (
 	StatusCreated status = iota
 	StatusConnecting
+	StatusErrConnecting
+	StatusConnected
 	StatusRestarting
 	StatusRunning
 	StatusPausing
@@ -25,6 +27,12 @@ func (s status) ToString() string {
 	switch s {
 	case StatusCreated:
 		return "created"
+	case StatusConnecting:
+		return "connecting"
+	case StatusErrConnecting:
+		return "error connecting"
+	case StatusConnected:
+		return "error connecting"
 	case StatusRestarting:
 		return "restarting"
 	case StatusRunning:
