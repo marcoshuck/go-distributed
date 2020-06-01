@@ -20,7 +20,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: DATABASE_HOST
-              value: mysql:3306
+              value: mysql-0:3306
           ports:
             - containerPort: 3000
           readinessProbe:
@@ -32,5 +32,5 @@ spec:
             httpGet:
               path: /healtz
               port: 3000
-              initialDelaySeconds: 15
-              periodSeconds: 20
+            initialDelaySeconds: 15
+            periodSeconds: 20
