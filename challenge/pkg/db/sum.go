@@ -9,7 +9,6 @@ import (
 func Add(tx *gorm.DB, ip, user string, value int64) (interface{}, error) {
 	var s sum.Sum
 	if notFound := tx.Model(&sum.Sum{}).Where("user = ?", user).First(&s).RecordNotFound(); notFound {
-		s.Total = value
 		s.User = user
 	}
 	s.IP = ip
