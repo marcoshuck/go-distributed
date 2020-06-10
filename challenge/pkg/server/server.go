@@ -36,7 +36,7 @@ func NewServer(address string, port uint, dsn string) *Server {
 		time.Sleep(time.Duration(i) * time.Second)
 	}
 	if err != nil {
-		panic("[server.go:38] Error connecting to the database.")
+		panic("Error connecting to the database.")
 	}
 	s := &Server{
 		Address: address,
