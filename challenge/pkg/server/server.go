@@ -48,7 +48,7 @@ func NewServer(address string, port uint, dsn string) *Server {
 	db.Migrate(database)
 	s.Handle("GET", "/sum/:user", worker.Get(s.DB))
 	s.Handle("POST", "/sum", worker.Sum(s.DB))
-	s.Handle("GET", "/healtz", func(ctx *gin.Context) {
+	s.Handle("GET", "/healthz", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, "Server is up")
 	})
 	return s
