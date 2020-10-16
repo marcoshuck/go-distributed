@@ -1,0 +1,4 @@
+export RABBITMQ_USER=guest
+export RABBITMQ_PASSWORD=guest
+export RABBITMQ_HOST=localhost
+export RABBITMQ_PORT=5672
