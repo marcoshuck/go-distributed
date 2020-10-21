@@ -21,27 +21,35 @@ func main() {
 	host := os.Getenv("RABBITMQ_HOST")
 	port := os.Getenv("RABBITMQ_PORT")
 
+	log.Printf("Connecting to the AMQP server on %s:%s\n", host, port)
+
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s/", user, password, host, port))
 	defer conn.Close()
 	if err != nil {
 		log.Fatal("error while connecting to RabbitMQ:", err)
 	}
 
+	log.Println("Attempting to open new channel")
+
 	channel, err := conn.Channel()
 	defer channel.Close()
 	if err != nil {
-		log.Fatal("error while creating new channel:", err)
+		log.Fatal("error while opening new channel:", err)
 	}
 
+	log.Println("Attempting to declare or use queue:", queue.SimulationRequests)
 	_, err = queue.NewAMQPQueue(channel, queue.SimulationRequests)
 	if err != nil {
-		log.Fatal("error while opening queue:", queue.SimulationRequests)
+		log.Fatal("error while using queue:", queue.SimulationRequests)
 	}
 
+	log.Println("Setting up new sender to connect to the simulations microservice")
 	send := sender.NewSender(channel)
 
+	log.Println("Initializing simulations controller")
 	ctrl := simulations.NewController(send)
 
+	log.Println("Adding simulation routes to server router")
 	server.Route("POST", "/simulations", ctrl.Create)
 
 	err = server.Run(8000)

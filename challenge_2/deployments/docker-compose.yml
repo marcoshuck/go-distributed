@@ -1,0 +1,45 @@
+version: '3.3'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    logging:
+      driver: none
+  http:
+    build:
+      context: ..
+      dockerfile: build/http.Dockerfile
+    env_file:
+      - ../.env
+    depends_on:
+      - rabbitmq
+    restart: always
+    ports:
+      - 8000:8000
+  simulations:
+    build:
+      context: ..
+      dockerfile: build/simulations.Dockerfile
+    env_file:
+      - ../.env
+    depends_on:
+      - rabbitmq
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 2
+  worker:
+    build:
+      context: ..
+      dockerfile: build/worker.Dockerfile
+    env_file:
+      - ../.env
+    depends_on:
+      - rabbitmq
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 5
