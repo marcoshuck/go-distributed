@@ -9,6 +9,7 @@ services:
     logging:
       driver: none
   http:
+    container_name: http
     build:
       context: ..
       dockerfile: build/http.Dockerfile
@@ -20,6 +21,7 @@ services:
     ports:
       - 8000:8000
   simulations:
+    container_name: simulations
     build:
       context: ..
       dockerfile: build/simulations.Dockerfile
@@ -32,6 +34,7 @@ services:
       mode: replicated
       replicas: 2
   worker:
+    container_name: worker
     build:
       context: ..
       dockerfile: build/worker.Dockerfile
@@ -39,7 +42,21 @@ services:
       - ../.env
     depends_on:
       - rabbitmq
+      - cloud
     restart: always
+    deploy:
+      mode: replicated
+      replicas: 5
+  cloud:
+    container_name: cloud_provider
+    build:
+      context: ..
+      dockerfile: build/cloud.Dockerfile
+    restart: always
+    ports:
+      - 50051:50051
+    env_file:
+      - ../.env
     deploy:
       mode: replicated
       replicas: 5

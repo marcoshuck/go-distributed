@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package cloud;
+
+option go_package = ".;cloud";
+
+service Cloud {
+  rpc CreateMachines (CreateMachinesRequest) returns (CreateMachinesResponse) {}
+}
+
+enum Provider {
+  AWS = 0;
+  GCP = 1;
+  DO =  2;
+}
+
+message CreateMachinesRequest {
+  string name = 1;
+  Provider provider = 2;
+  string kind = 3;
+  uint64 min = 4;
+  uint64 max = 5;
+}
+
+message CreateMachinesResponse {
+  repeated string instances = 1;
+  uint64 amount = 2;
+  Provider provider = 3;
+}

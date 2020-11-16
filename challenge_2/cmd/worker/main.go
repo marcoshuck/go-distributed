@@ -1,14 +1,17 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"github.com/marcoshuck/go-distributed/challenge_2/pkg/cloud"
 	"github.com/marcoshuck/go-distributed/challenge_2/pkg/consumer"
 	"github.com/marcoshuck/go-distributed/challenge_2/pkg/queue"
-	"github.com/marcoshuck/go-distributed/challenge_2/pkg/sender"
 	"github.com/marcoshuck/go-distributed/challenge_2/pkg/worker"
 	"github.com/streadway/amqp"
+	"google.golang.org/grpc"
 	"log"
 	"os"
+	"time"
 )
 
 func main() {
@@ -16,6 +19,10 @@ func main() {
 	password := os.Getenv("RABBITMQ_PASSWORD")
 	host := os.Getenv("RABBITMQ_HOST")
 	port := os.Getenv("RABBITMQ_PORT")
+
+	grpcHost := os.Getenv("CLOUD_PROVIDER_HOST")
+	grpcPort := os.Getenv("CLOUD_PROVIDER_PORT")
+	grpcAddr := fmt.Sprintf("%s:%s", grpcHost, grpcPort)
 
 	log.Printf("Connecting to the AMQP server on %s:%s\n", host, port)
 
@@ -39,13 +46,21 @@ func main() {
 		log.Fatal("error while opening queue:", err)
 	}
 
-	log.Println("Setting up new sender to connect to the generic microservice")
-	s := sender.NewSender(channel)
-
 	log.Println("Setting up new consumer to connect to the simulations microservice")
 	c := consumer.NewConsumer(channel)
 
-	w := worker.NewWorker(s, c)
+	log.Println("Connecting to cloud provider microservice")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	grpcConn, err := grpc.DialContext(ctx, grpcAddr, grpc.WithInsecure(), grpc.WithBlock())
+	defer grpcConn.Close()
+	if err != nil {
+		log.Fatal("error while connecting to cloud provider microservice:", err)
+	}
+
+	cloudProvider := cloud.NewCloudClient(grpcConn)
+
+	w := worker.NewWorker(c, cloudProvider)
 
 	log.Println("Initializing worker microservice")
 	err = w.Init()
